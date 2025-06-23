@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Poblacion {
     
-
+private static int [][] Mcromosomas;
 private static int N;
 
 public static int[][] CrearPoblacion(Integer[][] matriz){
@@ -21,7 +21,7 @@ public static int[][] CrearPoblacion(Integer[][] matriz){
             }
         }
         int[][] cromosomas = new int[Ncromosomas][NespacioVacio];
-        int[][] Mcromosomas = CrearMatrizCromosomas(cromosomas);
+        Mcromosomas = CrearMatrizCromosomas(cromosomas);
         System.err.println(NespacioVacio);
         scanner.close();    
         return Mcromosomas;
@@ -45,6 +45,17 @@ public static int [][] CrearMatrizCromosomas(int[][] cromosomas){
             System.out.println();
         }
     }
+    /* 
+public static int [][] Update_Poblacion(int[][] MPoblacion){
+    int[][] MPoblacionNew = new int [MPoblacion.length][MPoblacion[0].length];
+        for(int i = 0 ; i<N ; i++){
+            for(int j = 0 ; j<N ; j++){
+                MPoblacion[i][j] =
+            }
+        }
+
+}
+        */
     
 public static void main(String[] args){
     CrearSudoku sudoku = new CrearSudoku();
@@ -55,6 +66,7 @@ public static void main(String[] args){
     sudoku.imprimirTablero(MSudoku);
     int[][] MPoblacion  = CrearPoblacion(MSudoku);
     imprimirMatriz(MPoblacion);
+    scanner.close();    
 
 }
 

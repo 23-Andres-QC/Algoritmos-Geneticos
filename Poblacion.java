@@ -55,6 +55,7 @@ public static void main(String[] args){
     sudoku.imprimirTablero(MSudoku);
     int[][] MPoblacion  = CrearPoblacion(MSudoku);
     imprimirMatriz(MPoblacion);
+    scanner.close();
 
 }
 

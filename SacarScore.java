@@ -4,25 +4,14 @@ public class SacarScore {
     
     public SacarScore() {
         // Constructor vacío
-    }
-
-    public static class Resultado {
-        public Integer[][] ais;
-        public Integer[] scores;
-
-        public Resultado(Integer[][] ais, Integer[] scores) {
-            this.ais = ais;
-            this.scores = scores;
-        }
-    }
-
-    public static Resultado evaluarSoluciones(Integer[][] sudoku, Integer[][] soluciones) {
+    }      public static Integer[][] evaluarSoluciones(Integer[][] sudoku, Integer[][] soluciones) {
         int n = sudoku.length;
         int m = soluciones.length;
 
         int espaciosVacios = contarEspaciosVacios(sudoku);
-        Integer[][] ais = new Integer[m][espaciosVacios];
-        Integer[] scores = new Integer[m];        for (int iSol = 0; iSol < m; iSol++) {
+        Integer[][] matrizScore = new Integer[m][espaciosVacios];
+
+        for (int iSol = 0; iSol < m; iSol++) {
             Integer[][] tablero = clonarSudoku(sudoku);
             int idx = 0;
 
@@ -37,27 +26,23 @@ public class SacarScore {
             }
             
             idx = 0;
-            int aciertos = 0;
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     if (sudoku[i][j] == null) {
                         Integer val = tablero[i][j];
                         boolean conflicto = hayConflicto(tablero, i, j, val);
                         if (conflicto) {
-                            ais[iSol][idx] = 0;
+                            matrizScore[iSol][idx] = 0;
                         } else {
-                            ais[iSol][idx] = 1;
-                            aciertos++;
+                            matrizScore[iSol][idx] = 1;
                         }
                         idx++;
                     }
                 }
             }
-
-            scores[iSol] = aciertos;
         }
 
-        return new Resultado(ais, scores);
+        return matrizScore;
     }
 
     private static Integer[][] clonarSudoku(Integer[][] sudoku) {
@@ -104,17 +89,13 @@ public class SacarScore {
             {2, 4, 3, 1, 3, 2, 4, 1, 2},
             {3, 2, 1, 4, 2, 3, 1, 4, 2},
             {4, 3, 2, 1, 1, 2, 3, 4, 2}
-        };
+        };        
+        
+        Integer[][] matrizScore = evaluarSoluciones(sudoku, soluciones);
 
-
-        Resultado r = evaluarSoluciones(sudoku, soluciones);
-
-        System.out.println("Matriz AIS:");
-        for (Integer[] fila : r.ais) {
+        System.out.println("Matriz Score:");
+        for (Integer[] fila : matrizScore) {
             System.out.println(Arrays.toString(fila));
         }
-
-        System.out.println("Scores:");
-        System.out.println(Arrays.toString(r.scores));
     }
 }

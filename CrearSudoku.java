@@ -91,7 +91,7 @@ public class CrearSudoku {
         }
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Tamaño del Sudoku (ej: 4, 9, 16): ");
         int n = scanner.nextInt();
@@ -101,5 +101,5 @@ public class CrearSudoku {
 
         System.out.println("\nSudoku");
         generador.imprimirTablero(sudoku);
-    }
+    }*/
 }

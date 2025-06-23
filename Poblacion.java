@@ -1,57 +1,61 @@
 import java.util.Random;
 import java.util.Scanner;
 
+
 public class Poblacion {
     
-private static int Ncromosomas;
 
+private static int N;
 
+public static int[][] CrearPoblacion(Integer[][] matriz){
+        Scanner scanner = new Scanner(System.in);
+        int NespacioVacio = 0;
+        System.out.print("¿Ingrese el numero de cromosomas que desea? ");
+        int Ncromosomas = scanner.nextInt();
 
-public static Integer[][] generarMatriz(int n) {
-        Integer[][] matriz = new Integer[n][n];
-        Random rand = new Random();
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                // 70% de probabilidad de poner un número, 30% de dejarlo vacío (null)
-                if (rand.nextDouble() < 0.7) {
-                    matriz[i][j] = rand.nextInt(n)+1; // Número entre 0 y 99
-                } else {
-                    matriz[i][j] = null;
+        for(int i = 0 ; i<N ; i++){
+            for(int j = 0 ; j<N ; j++){
+                if(matriz[i][j] == null){
+                    NespacioVacio++;
                 }
             }
         }
-
-        return matriz;
+        int[][] cromosomas = new int[Ncromosomas][NespacioVacio];
+        int[][] Mcromosomas = CrearMatrizCromosomas(cromosomas);
+        System.err.println(NespacioVacio);
+        scanner.close();    
+        return Mcromosomas;
     }
-
-    public static void imprimirMatriz(Integer[][] matriz) {
-        for (Integer[] fila : matriz) {
-            for (Integer valor : fila) {
-                if (valor == null) {
-                    System.out.print("[   ] ");
-                } else {
-                    System.out.printf("[%3d] ", valor);
+public static int [][] CrearMatrizCromosomas(int[][] cromosomas){
+    Random rand = new Random();
+    for(int i = 0 ; i<cromosomas.length; i++){
+            for(int j = 0 ; j<cromosomas[i].length ; j++){
+                cromosomas[i][j] = rand.nextInt(N) +1 ;  
                 }
+            }
+            return cromosomas;
+        }
+
+     public static void imprimirMatriz(int[][] matriz) {
+        for (int[] fila : matriz) {
+            for (int valor : fila) {
+                     System.out.printf("[%3d] ", valor);
+                
             }
             System.out.println();
         }
     }
-
-    public static int[][] CrearPoblacion(int[][] Matriz ){
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("¿Ingrese el tamaño de la Poblacion");
-        int Ncromosomas = scanner.nextInt();
-        int[][] 
-
-    }
-
-
-public static void main(String[] args){
-    int n = 5;
-    Integer[][] matriz = generarMatriz(n);
-    imprimirMatriz(matriz);
     
+public static void main(String[] args){
+    CrearSudoku sudoku = new CrearSudoku();
+    Scanner scanner = new Scanner(System.in);
+    System.out.print("Tamaño del Sudoku (ej: 4, 9, 16): ");
+     N = scanner.nextInt();
+    Integer[][] MSudoku = sudoku.generarSudoku(N);
+    sudoku.imprimirTablero(MSudoku);
+    int[][] MPoblacion  = CrearPoblacion(MSudoku);
+    imprimirMatriz(MPoblacion);
+
 }
 
 

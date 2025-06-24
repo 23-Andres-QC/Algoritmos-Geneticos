@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class CrearSudoku {
+public class CrearSudokuParalelo {
 
     private int N;
     private int SQRT_N;
@@ -17,8 +17,8 @@ public class CrearSudoku {
         this.tablero = new Integer[N][N];
         this.random = new Random();
 
-        resolverSudoku(); 
-        removerCeldas((int) (N * N * 0.6)); 
+        resolverSudoku();
+        removerCeldas((int) (N * N * 0.6));
 
         return tablero;
     }
@@ -33,22 +33,56 @@ public class CrearSudoku {
     }
 
     private boolean esValido(int fila, int col, int num) {
-        for (int i = 0; i < N; i++) {
-            if (tablero[fila][i] != null && tablero[fila][i] == num) return false;
-            if (tablero[i][col] != null && tablero[i][col] == num) return false;
-        }
+        final boolean[] esFilaValida = {true};
+        final boolean[] esColValida = {true};
+        final boolean[] esSubcuadroValido = {true};
 
-        int startRow = fila - fila % SQRT_N;
-        int startCol = col - col % SQRT_N;
-
-        for (int i = 0; i < SQRT_N; i++) {
-            for (int j = 0; j < SQRT_N; j++) {
-                Integer val = tablero[startRow + i][startCol + j];
-                if (val != null && val == num) return false;
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < N; i++) {
+                if (tablero[fila][i] != null && tablero[fila][i] == num) {
+                    esFilaValida[0] = false;
+                    break;
+                }
             }
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < N; i++) {
+                if (tablero[i][col] != null && tablero[i][col] == num) {
+                    esColValida[0] = false;
+                    break;
+                }
+            }
+        });
+
+        Thread t3 = new Thread(() -> {
+            int startRow = fila - fila % SQRT_N;
+            int startCol = col - col % SQRT_N;
+            for (int i = 0; i < SQRT_N; i++) {
+                for (int j = 0; j < SQRT_N; j++) {
+                    Integer val = tablero[startRow + i][startCol + j];
+                    if (val != null && val == num) {
+                        esSubcuadroValido[0] = false;
+                        return;
+                    }
+                }
+            }
+        });
+
+        // Iniciar hilos
+        t1.start();
+        t2.start();
+        t3.start();
+
+        try {
+            t1.join();
+            t2.join();
+            t3.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        return true;
+        return esFilaValida[0] && esColValida[0] && esSubcuadroValido[0];
     }
 
     private boolean resolverSudoku() {
@@ -99,7 +133,7 @@ public class CrearSudoku {
         CrearSudoku generador = new CrearSudoku();
         Integer[][] sudoku = generador.generarSudoku(n);
 
-        System.out.println("\nSudoku");
+        System.out.println("\nSudoku generado:");
         generador.imprimirTablero(sudoku);
     }
 }

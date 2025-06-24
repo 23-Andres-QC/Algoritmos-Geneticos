@@ -72,7 +72,11 @@ public static void main(String[] args){
     sudoku.imprimirTablero(MSudoku);
     int[][] MPoblacion  = CrearPoblacion(MSudoku);
     imprimirMatriz(MPoblacion);
+<<<<<<< HEAD
+    scanner.close();
+=======
     scanner.close();    
+>>>>>>> c4c24a49412052fa9e6a32e973d23d3fdcfdec6e
 
 }
 

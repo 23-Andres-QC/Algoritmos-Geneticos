@@ -18,7 +18,7 @@ public class CrearSudoku {
         this.random = new Random();
 
         resolverSudoku(); 
-        removerCeldas((int) (N * N * 0.6)); 
+        removerCeldas((int) (N * N * 0.5)); 
 
         return tablero;
     }
@@ -91,15 +91,5 @@ public class CrearSudoku {
         }
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Tamaño del Sudoku (ej: 4, 9, 16): ");
-        int n = scanner.nextInt();
-
-        CrearSudoku generador = new CrearSudoku();
-        Integer[][] sudoku = generador.generarSudoku(n);
-
-        System.out.println("\nSudoku");
-        generador.imprimirTablero(sudoku);
-    }
+  
 }

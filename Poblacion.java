@@ -12,7 +12,7 @@ public Poblacion(){
 }
 
 
-public  int[][] CrearPoblacion(Integer[][] matriz, int N){
+public  Integer[][] CrearPoblacion(Integer[][] matriz, int N){
         Scanner scanner = new Scanner(System.in);
         int NespacioVacio = 0;
         System.out.print("¿Ingrese el numero de cromosomas que desea? ");
@@ -24,13 +24,13 @@ public  int[][] CrearPoblacion(Integer[][] matriz, int N){
                 }
             }
         }
-        int[][] cromosomas = new int[Ncromosomas][NespacioVacio];
-        int [][]Mcromosomas = CrearMatrizCromosomas(cromosomas,N);
+        Integer[][] cromosomas = new Integer [Ncromosomas][NespacioVacio];
+        Integer [][]Mcromosomas = CrearMatrizCromosomas(cromosomas,N);
         System.err.println(NespacioVacio);
         scanner.close();    
         return Mcromosomas;
     }
-public  int [][] CrearMatrizCromosomas(int[][] cromosomas,int N){
+public  Integer [][] CrearMatrizCromosomas(Integer[][] cromosomas,int N){
     Random rand = new Random();
     for(int i = 0 ; i<cromosomas.length; i++){
             for(int j = 0 ; j<cromosomas[i].length ; j++){
@@ -40,8 +40,8 @@ public  int [][] CrearMatrizCromosomas(int[][] cromosomas,int N){
             return cromosomas;
         }
 
-public  void imprimirMatriz(int[][] matriz) {
-    for (int[] fila : matriz) {
+public  void imprimirMatriz(Integer[][] matriz) {
+    for (Integer[] fila : matriz) {
         for (int valor : fila) {
             System.out.printf("[%3d] ", valor);
                 

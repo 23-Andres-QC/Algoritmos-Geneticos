@@ -135,5 +135,6 @@ public class CrearSudokuParalelo {
 
         System.out.println("\nSudoku generado:");
         generador.imprimirTablero(sudoku);
+        scanner.close();
     }
 }

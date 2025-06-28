@@ -1,38 +1,25 @@
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 
 public class MutacionParalelo {
     private static final Random rand = new Random();
 
     // Calcula el score por fila (cantidad de genes correctos) en paralelo
     public static int[] calcularScoresPorFila(Integer[][] puntajes) {
-        ThreadPool threadPool = ThreadPool.getInstance();
+        PoolDeHilos poolDeHilos = PoolDeHilos.obtenerInstancia();
         int[] scores = new int[puntajes.length];
-        CountDownLatch latch = new CountDownLatch(puntajes.length);
-        
         // Calcular score de cada fila en paralelo
         for (int i = 0; i < puntajes.length; i++) {
             final int indice = i;
-            threadPool.submit(() -> {
-                try {
-                    int total = 0;
-                    for (int j = 0; j < puntajes[0].length; j++) {
-                        if (puntajes[indice][j] == 1) total++;
-                    }
-                    scores[indice] = total;
-                } finally {
-                    latch.countDown();
+            poolDeHilos.enviar(() -> {
+                int total = 0;
+                for (int j = 0; j < puntajes[0].length; j++) {
+                    if (puntajes[indice][j] == 1) total++;
                 }
+                scores[indice] = total;
             });
         }
-        
         // Esperar a que todas las tareas terminen
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        
+        poolDeHilos.esperarFinalizacion();
         return scores;
     }
 
@@ -58,32 +45,20 @@ public class MutacionParalelo {
         }
 
         // Cruzar el mejor con todos en paralelo
-        ThreadPool threadPool = ThreadPool.getInstance();
+        PoolDeHilos poolDeHilos = PoolDeHilos.obtenerInstancia();
         Integer[][] nuevaPoblacion = new Integer[nCromosomas][nGenes];
-        CountDownLatch latch = new CountDownLatch(nCromosomas);
-        
         final int mejorIndiceFinal = mejorIndice;
         for (int i = 0; i < nCromosomas; i++) {
             final int indice = i;
-            threadPool.submit(() -> {
-                try {
-                    nuevaPoblacion[indice] = cruzar(
-                        poblacion[mejorIndiceFinal], puntajes[mejorIndiceFinal],
-                        poblacion[indice], puntajes[indice], N
-                    );
-                } finally {
-                    latch.countDown();
-                }
+            poolDeHilos.enviar(() -> {
+                nuevaPoblacion[indice] = cruzar(
+                    poblacion[mejorIndiceFinal], puntajes[mejorIndiceFinal],
+                    poblacion[indice], puntajes[indice], N
+                );
             });
         }
-
         // Esperar a que todas las tareas terminen
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
+        poolDeHilos.esperarFinalizacion();
         return nuevaPoblacion;
     }
 

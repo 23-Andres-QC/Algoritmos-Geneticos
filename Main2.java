@@ -1,9 +1,6 @@
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class Main {
+public class Main2 {
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             CrearSudoku sudoku = new CrearSudoku();
@@ -28,32 +25,22 @@ public class Main {
             int generacion = 0;
             boolean solucionEncontrada = false;
 
-            try (PrintWriter log = new PrintWriter(new FileWriter("log_generaciones.txt"))) {
             while (generacion < MAX_GENERACIONES && !solucionEncontrada) {
-                System.out.println("Generación " + generacion + "...");
-
-                log.println("\n===== GENERACIÓN " + generacion + " =====");
-                log.println("==== Población ====");
-                escribirMatriz(log, poblacionActual);
-
-                log.println("==== Puntajes ====");
-                escribirMatriz(log, puntajes);
+                System.out.println("\n===== GENERACIÓN " + generacion + " =====");
+                System.out.println("==== Población ====");
+                imprimirMatriz(poblacionActual);
+                System.out.println("==== Puntajes ====");
+                imprimirMatriz(puntajes);
 
                 int[] scores = Mutacion.calcularScoresPorFila(puntajes);
 
                 // Verificar si hay un cromosoma perfecto
                 for (int i = 0; i < scores.length; i++) {
                     if (scores[i] == puntajes[0].length) {
-                        log.println("\n ¡Solución encontrada en la generación " + generacion + "!");
-                        log.print("Genoma solución: ");
-                        for (int gen : poblacionActual[i]) log.print("[" + gen + "] ");
-                        log.println();
-
-                        System.out.println(" Solución encontrada en generación " + generacion);
+                        System.out.println("\n¡Solución encontrada en la generación " + generacion + "!");
                         System.out.print("Genoma solución: ");
                         for (int gen : poblacionActual[i]) System.out.print("[" + gen + "] ");
                         System.out.println();
-
                         solucionEncontrada = true;
                         break;
                     }
@@ -67,24 +54,20 @@ public class Main {
             }
 
             if (!solucionEncontrada) {
-                log.println("\n No se encontró solución perfecta en " + MAX_GENERACIONES + " generaciones.");
-                System.out.println(" No se encontró solución perfecta en " + MAX_GENERACIONES + " generaciones.");
+                System.out.println("\nNo se encontró solución perfecta en " + MAX_GENERACIONES + " generaciones.");
             }
             long tiempoFin = System.currentTimeMillis();
             double segundos = (tiempoFin - tiempoInicio) / 1000.0;
             System.out.printf("\nTiempo total de ejecución: %.3f segundos\n", segundos);
-            } catch (IOException e) {
-                System.err.println("Error al escribir archivo de log: " + e.getMessage());
-            }
         }
     }
 
-    private static void escribirMatriz(PrintWriter log, Integer[][] matriz) {
+    private static void imprimirMatriz(Integer[][] matriz) {
         for (Integer[] fila : matriz) {
             for (Integer val : fila) {
-                log.printf("[%3d] ", val);
+                System.out.printf("[%3d] ", val);
             }
-            log.println();
+            System.out.println();
         }
     }
 }

@@ -3,8 +3,8 @@ import java.util.Arrays;
 public class SacarScore {
     
     public SacarScore() {
-        // Constructor vacío
-    }      public static Integer[][] evaluarSoluciones(Integer[][] sudoku, Integer[][] soluciones) {
+    }      
+    public static Integer[][] evaluarSoluciones(Integer[][] sudoku, Integer[][] soluciones) {
         int n = sudoku.length;
         int m = soluciones.length;
 

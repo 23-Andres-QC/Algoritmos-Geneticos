@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 
 public class CrearSudokuParalelo {
 
@@ -34,73 +33,54 @@ public class CrearSudokuParalelo {
     }
 
     private boolean esValido(int fila, int col, int num) {
-        ThreadPool threadPool = ThreadPool.getInstance();
+        PoolDeHilos poolDeHilos = PoolDeHilos.obtenerInstancia();
         final boolean[] esFilaValida = {true};
         final boolean[] esColValida = {true};
         final boolean[] esSubcuadroValido = {true};
-        
-        CountDownLatch latch = new CountDownLatch(3);
 
         // Verificar fila en paralelo
-        threadPool.submit(() -> {
-            try {
-                for (int i = 0; i < N; i++) {
-                    if (tablero[fila][i] != null && tablero[fila][i] == num) {
-                        esFilaValida[0] = false;
-                        break;
-                    }
+        poolDeHilos.enviar(() -> {
+            for (int i = 0; i < N; i++) {
+                if (tablero[fila][i] != null && tablero[fila][i] == num) {
+                    esFilaValida[0] = false;
+                    break;
                 }
-            } finally {
-                latch.countDown();
             }
         });
 
         // Verificar columna en paralelo
-        threadPool.submit(() -> {
-            try {
-                for (int i = 0; i < N; i++) {
-                    if (tablero[i][col] != null && tablero[i][col] == num) {
-                        esColValida[0] = false;
-                        break;
-                    }
+        poolDeHilos.enviar(() -> {
+            for (int i = 0; i < N; i++) {
+                if (tablero[i][col] != null && tablero[i][col] == num) {
+                    esColValida[0] = false;
+                    break;
                 }
-            } finally {
-                latch.countDown();
             }
         });
 
         // Verificar subcuadro en paralelo
-        threadPool.submit(() -> {
-            try {
-                int startRow = fila - fila % SQRT_N;
-                int startCol = col - col % SQRT_N;
-                for (int i = 0; i < SQRT_N; i++) {
-                    for (int j = 0; j < SQRT_N; j++) {
-                        Integer val = tablero[startRow + i][startCol + j];
-                        if (val != null && val == num) {
-                            esSubcuadroValido[0] = false;
-                            return;
-                        }
+        poolDeHilos.enviar(() -> {
+            int startRow = fila - fila % SQRT_N;
+            int startCol = col - col % SQRT_N;
+            for (int i = 0; i < SQRT_N; i++) {
+                for (int j = 0; j < SQRT_N; j++) {
+                    Integer val = tablero[startRow + i][startCol + j];
+                    if (val != null && val == num) {
+                        esSubcuadroValido[0] = false;
+                        return;
                     }
                 }
-            } finally {
-                latch.countDown();
             }
         });
 
-        // Esperar a que terminen todas las verificaciones
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return false;
-        }
+        // Usar el método del pool para esperar a que terminen todas las tareas
+        poolDeHilos.esperarFinalizacion();
 
         return esFilaValida[0] && esColValida[0] && esSubcuadroValido[0];
     }
 
-    private boolean resolverSudoku() {
-        for (int fila = 0; fila < N; fila++) {
+    private boolean resolverSudoku() {for
+         (int fila = 0; fila < N; fila++) {
             for (int col = 0; col < N; col++) {
                 if (tablero[fila][col] == null) {
                     List<Integer> numeros = generarNumerosAleatorios();
@@ -139,8 +119,9 @@ public class CrearSudokuParalelo {
         }
     }
 
+    /*
     public static void main(String[] args) {
-        ThreadPool threadPool = ThreadPool.getInstance();
+        PoolDeHilos poolDeHilos = PoolDeHilos.obtenerInstancia();
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.print("Tamaño del Sudoku (ej: 4, 9, 16): ");
             int n = scanner.nextInt();
@@ -151,7 +132,8 @@ public class CrearSudokuParalelo {
             System.out.println("Sudoku generado:");
             generador.imprimirTablero(sudoku);
         } finally {
-            threadPool.shutdown();
+            poolDeHilos.apagar();
         }
     }
+    */
 }
